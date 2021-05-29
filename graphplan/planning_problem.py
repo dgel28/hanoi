@@ -42,12 +42,16 @@ class PlanningProblem:
 
     def get_start_state(self):
         "*** YOUR CODE HERE ***"
+        return self.initialState
 
     def is_goal_state(self, state):
         """
         Hint: you might want to take a look at goal_state_not_in_prop_payer function
         """
         "*** YOUR CODE HERE ***"
+        if not(self.goal_state_not_in_prop_layer(state)):
+            return True
+        return False
 
     def get_successors(self, state):
         """
@@ -64,6 +68,12 @@ class PlanningProblem:
         """
         self.expanded += 1
         "*** YOUR CODE HERE ***"
+        l = list()
+        for a in self.actions:
+            if a.all_preconds_in_list(list(state)):
+                suc = frozenset(set(set(a.add).union(state)).difference(a.delete))
+                l.append((suc, a, 1))
+        return l
 
     @staticmethod
     def get_cost_of_actions( actions):
@@ -155,9 +165,9 @@ if __name__ == '__main__':
             exit()
 
     prob = PlanningProblem(domain, problem)
-    start = time.clock()
+    start = time.perf_counter()
     plan = a_star_search(prob, heuristic)
-    elapsed = time.clock() - start
+    elapsed = time.perf_counter() - start
     if plan is not None:
         print("Plan found with %d actions in %.2f seconds" % (len(plan), elapsed))
     else:
