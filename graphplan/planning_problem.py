@@ -116,6 +116,16 @@ def max_level(state, planning_problem):
     pg_init.set_proposition_layer(prop_layer_init)   #update the new plan graph level with the the proposition layer
     """
     "*** YOUR CODE HERE ***"
+    if(planning_problem.is_goal_state(state)):
+        return 0
+    count = 1
+    new_stat = set(planning_problem.get_successors(state))
+    while(not(planning_problem.is_goal_state(new_stat))):
+        old_stat = set(copy.deepcopy(new_stat))
+        new_stat = set(planning_problem.get_successors(old_stat))
+        if (old_stat.issubset(new_stat) or new_stat.issubset(old_stat)) and len(old_stat) == len(new_stat):
+            return float('inf')
+        count += 1
 
 
 def level_sum(state, planning_problem):
